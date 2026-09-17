@@ -1,0 +1,8 @@
+.env
+.env.local
+data
+node_modules
+server.out.log
+server.err.log
+*.log
+.git

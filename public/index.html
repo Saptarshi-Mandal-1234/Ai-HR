@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI HR | People Operations</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <div>
+            <h1>AI HR</h1>
+            <p>Focused people operations</p>
+          </div>
+        </div>
+
+        <p class="sidebar-label">Workspaces</p>
+        <nav class="mode-list" aria-label="HR specialties">
+          <button type="button" class="mode-button active" data-mode="home" aria-pressed="true">Home</button>
+          <button type="button" class="mode-button" data-mode="employees" aria-pressed="false">Employees</button>
+          <button type="button" class="mode-button" data-mode="onboarding" aria-pressed="false">Onboarding</button>
+          <button type="button" class="mode-button" data-mode="reviews" aria-pressed="false">Reviews</button>
+          <button type="button" class="mode-button" data-mode="generalist" aria-pressed="false">Ask AI HR</button>
+          <button type="button" class="mode-button settings-mode" data-mode="settings" aria-pressed="false">Settings</button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="hero">
+          <div>
+            <p class="eyebrow">AI HR / People operations</p>
+            <h2>People operations workspace</h2>
+            <p class="hero-copy">Onboarding, performance evidence, workforce context, and accountable review in one place.</p>
+          </div>
+          <div class="topbar-tools">
+            <div class="auth-panel">
+              <p id="authIdentity" class="meta-line" aria-live="polite">Checking access...</p>
+              <div id="authFields" class="auth-fields" hidden>
+                <label id="organizationField" hidden>
+                  Organization
+                  <input id="organizationName" placeholder="Company name" autocomplete="organization" />
+                </label>
+                <label>
+                  Email
+                  <input id="authEmail" type="email" autocomplete="username" />
+                </label>
+                <label>
+                  Password
+                  <input id="authPassword" type="password" autocomplete="current-password" aria-describedby="authPasswordGuidance" />
+                </label>
+                <div id="authPasswordGuidance" class="password-guidance" aria-live="polite" hidden></div>
+                <label id="termsConsent" class="checkbox-field" hidden>
+                  <input id="acceptTerms" type="checkbox" />
+                  I acknowledge the privacy notice, terms, and human-review requirements.
+                </label>
+                <div class="composer-actions">
+                  <button id="loginButton" class="primary-button">Sign in</button>
+                  <button id="bootstrapButton" class="ghost-button" hidden>Create workspace</button>
+                  <button id="acceptInvitationButton" class="primary-button" hidden>Accept invitation</button>
+                </div>
+                <div id="mfaChallenge" hidden>
+                  <label>
+                    Authenticator code
+                    <input id="mfaChallengeCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+                  </label>
+                  <button id="verifyMfaButton" class="primary-button">Verify code</button>
+                </div>
+              </div>
+              <button id="logoutButton" class="ghost-button" hidden>Sign out</button>
+              <details id="passwordTools" class="service-access" hidden>
+                <summary>Account security</summary>
+                <p id="accountSecurityStatus" class="form-status" aria-live="polite" hidden></p>
+                <label>
+                  Current password
+                  <input id="currentPassword" type="password" autocomplete="current-password" />
+                </label>
+                <label>
+                  New password
+                  <input id="newPassword" type="password" autocomplete="new-password" aria-describedby="newPasswordGuidance" />
+                </label>
+                <div id="newPasswordGuidance" class="password-guidance" aria-live="polite"></div>
+                <button id="changePasswordButton" class="ghost-button">Update password</button>
+                <div class="section-divider">
+                  <p id="mfaStatus" class="meta-line">Authenticator protection is off.</p>
+                  <button id="setupMfaButton" class="ghost-button">Set up authenticator</button>
+                  <div id="mfaSetupPanel" hidden>
+                    <label>
+                      Setup key
+                      <input id="mfaSetupSecret" readonly autocomplete="off" />
+                    </label>
+                    <label>
+                      Authenticator code
+                      <input id="mfaSetupCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+                    </label>
+                    <button id="confirmMfaButton" class="primary-button">Enable MFA</button>
+                  </div>
+                  <div id="mfaDisablePanel" hidden>
+                    <label>
+                      Current password
+                      <input id="mfaDisablePassword" type="password" autocomplete="current-password" />
+                    </label>
+                    <label>
+                      Authenticator code
+                      <input id="mfaDisableCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+                    </label>
+                    <button id="disableMfaButton" class="ghost-button">Disable MFA</button>
+                  </div>
+                </div>
+              </details>
+              <details id="serviceAccess" class="service-access" hidden>
+                <summary>Service access</summary>
+                <label class="token-field">
+                  Access token
+                  <input id="authToken" type="password" placeholder="API or emergency token" autocomplete="off" />
+                </label>
+              </details>
+            </div>
+            <div class="status-pill" id="statusPill">Checking API</div>
+          </div>
+        </header>
+
+        <section id="metricsPanel" class="ops-grid" aria-label="HR operating metrics">
+          <article>
+            <span id="recordsMetric">0</span>
+            <p>People records</p>
+          </article>
+          <article>
+            <span id="decisionsMetric">0</span>
+            <p>Decision briefs</p>
+          </article>
+          <article>
+            <span id="approvalsMetric">0</span>
+            <p>Pending approvals</p>
+          </article>
+          <article>
+            <span id="criticalMetric">0</span>
+            <p>Critical risk cases</p>
+          </article>
+        </section>
+
+        <section id="analyticsPanel" class="analytics-panel" aria-label="Aggregate workforce analytics" hidden>
+          <div class="panel-title analytics-heading">
+            <div>
+              <h3>Workforce analytics</h3>
+              <p>Aggregate evidence only. No individual risk scoring.</p>
+            </div>
+            <label>
+              Breakdown
+              <select id="analyticsDimension">
+                <option value="department">Department</option>
+                <option value="job role">Job role</option>
+                <option value="job level">Job level</option>
+                <option value="overtime">Overtime</option>
+                <option value="years at company">Years at company</option>
+              </select>
+            </label>
+          </div>
+          <div id="analyticsSummary" class="metrics-summary"></div>
+          <div id="analyticsChart" class="analytics-chart"></div>
+          <p id="analyticsProvenance" class="meta-line"></p>
+        </section>
+
+        <section id="quickActions" class="quick-actions" aria-label="Quick HR workflows">
+          <button data-template="Create a 30-60-90 day onboarding plan for a new sales manager.">Onboarding plan</button>
+          <button data-template="Summarize documented performance wins, concerns, support, and fair next steps.">Performance review</button>
+          <button data-template="Summarize employee shout-outs, complaints, and observations without creating an individual behavior score.">People summary</button>
+        </section>
+
+        <section id="composerPanel" class="composer">
+          <div class="panel-title active-specialty">
+            <p>Active specialty</p>
+            <h3 id="activeModeTitle">Onboarding</h3>
+          </div>
+          <div id="composerOptions" class="field-grid" hidden>
+            <label>
+              Output
+              <select id="desiredOutput">
+                <option value="action_plan">Action plan</option>
+                <option value="email_or_message">Email or message</option>
+                <option value="policy_or_sop">Policy or SOP</option>
+                <option value="interview_kit">Interview kit</option>
+                <option value="decision_memo">Decision memo</option>
+                <option value="checklist">Checklist</option>
+              </select>
+            </label>
+            <label>
+              Risk level
+              <select id="riskLevel">
+                <option value="normal">Normal</option>
+                <option value="sensitive">Sensitive</option>
+                <option value="high">High-stakes</option>
+              </select>
+            </label>
+          </div>
+
+          <label id="companyContextField" hidden>
+            Company context
+            <textarea id="companyContext" rows="4" placeholder="Company size, location, policies, roles, culture, constraints..."></textarea>
+          </label>
+
+          <label>
+            HR request
+            <textarea id="prompt" rows="7" placeholder="Example: Help me prepare a fair promotion process for team leads across engineering and support."></textarea>
+          </label>
+
+          <div class="composer-actions">
+            <button id="runButton" class="primary-button">Generate HR work</button>
+            <button id="clearButton" class="ghost-button">Clear</button>
+          </div>
+        </section>
+
+        <section class="operations">
+          <article id="homePanel" class="operation-panel focused-panel">
+            <div class="home-heading">
+              <div class="panel-title">
+                <p class="eyebrow">Today</p>
+                <h3>HR overview</h3>
+                <p>Start with demo data or continue from the latest people activity.</p>
+              </div>
+              <span id="activeDatasetBadge" class="dataset-badge">Checking dataset...</span>
+            </div>
+            <div id="homeSummary" class="home-metrics">
+              <div><strong>0</strong><span>Employees</span></div>
+              <div><strong>0</strong><span>Open reviews</span></div>
+              <div><strong>0</strong><span>Pending onboarding</span></div>
+              <div><strong>0</strong><span>Complaints to review</span></div>
+            </div>
+            <div class="welcome-actions">
+              <button id="useDemoDataButton" class="primary-button">Use demo data</button>
+              <button id="uploadCompanyDataButton" class="ghost-button">Upload company data</button>
+            </div>
+            <div class="section-divider panel-title">
+              <h4>Recent activity</h4>
+            </div>
+            <div id="recentActivity" class="activity-list"></div>
+          </article>
+
+          <article id="employeesPanel" class="operation-panel focused-panel" hidden>
+            <div class="panel-title">
+              <p class="eyebrow">Employees</p>
+              <h3>Employee directory</h3>
+              <p>Search people and review their complete HR history in one place.</p>
+            </div>
+            <div class="employee-workspace">
+              <section class="employee-directory" aria-label="Employee directory">
+                <label>
+                  Search employees
+                  <input id="employeeDirectorySearch" type="search" placeholder="Name, role, department, or location" />
+                </label>
+                <div id="employeeDirectoryList" class="directory-list"></div>
+              </section>
+              <section id="employeeProfile" class="employee-profile" aria-live="polite">
+                <div class="empty-state">
+                  <h4>Select an employee</h4>
+                  <p>Choose a person to view employment details, performance history, feedback, and pending actions.</p>
+                </div>
+              </section>
+            </div>
+          </article>
+
+          <article id="knowledgePanel" class="operation-panel" hidden>
+            <div class="panel-title">
+              <h3>Company knowledge</h3>
+              <p>Add approved policy and handbook text for cited AI answers.</p>
+            </div>
+            <label>
+              Document title
+              <input id="knowledgeTitle" placeholder="Example: Leave policy 2026" />
+            </label>
+            <label>
+              Text or Markdown file
+              <input id="knowledgeFile" type="file" accept=".txt,.md,text/plain,text/markdown" />
+            </label>
+            <button id="uploadKnowledgeButton" class="primary-button">Add knowledge document</button>
+            <div id="knowledgeList" class="list-panel compact-list"></div>
+          </article>
+
+          <article id="generalistPanel" class="operation-panel focused-panel" hidden>
+            <div class="panel-title">
+              <h3>HR Generalist</h3>
+              <p>Handle everyday HR questions and identify the right next step.</p>
+            </div>
+            <label>
+              HR request
+              <textarea id="generalistRequest" rows="6" placeholder="Describe the employee question, manager request, documentation need, or HR situation"></textarea>
+            </label>
+            <label>
+              Relevant company context
+              <textarea id="generalistContext" rows="4" placeholder="Location, role, dates, approved policy, and other known facts"></textarea>
+            </label>
+            <button id="generateGeneralistButton" class="primary-button">Get HR guidance</button>
+          </article>
+
+          <article id="onboardingPanel" class="operation-panel focused-panel">
+            <div class="panel-title">
+              <h3>New hire onboarding pack</h3>
+              <p>Create the role description, first-week plan, and practical office guide.</p>
+            </div>
+            <div class="field-grid">
+              <label>
+                New hire
+                <input id="onboardingName" placeholder="Candidate or employee name" />
+              </label>
+              <label>
+                Job title
+                <input id="onboardingRole" placeholder="Example: Customer Success Manager" />
+              </label>
+              <label>
+                Department and manager
+                <input id="onboardingTeam" placeholder="Example: Success, reporting to Priya" />
+              </label>
+              <label>
+                Start date and work setup
+                <input id="onboardingSetup" placeholder="Example: 14 Sep, hybrid, Mumbai" />
+              </label>
+            </div>
+            <label>
+              Role responsibilities
+              <textarea id="onboardingResponsibilities" rows="4" placeholder="Main responsibilities, expected outcomes, and tools"></textarea>
+            </label>
+            <label>
+              Daily office needs
+              <textarea id="onboardingDailyNeeds" rows="4" placeholder="Hours, access, equipment, contacts, meetings, leave process, dress or site guidance"></textarea>
+            </label>
+            <button id="generateOnboardingButton" class="primary-button">Generate onboarding pack</button>
+            <div class="section-divider panel-title">
+              <h4>Onboarding in progress</h4>
+            </div>
+            <div id="onboardingList" class="list-panel compact-list"></div>
+          </article>
+
+          <article id="performancePanel" class="operation-panel performance-panel" hidden>
+            <div class="panel-title">
+              <h3>Performance tracker</h3>
+              <p>Record expectations, evidence, support, and the next human review.</p>
+            </div>
+            <div id="performanceForm" class="performance-form">
+              <div class="field-grid">
+                <label>
+                  Employee
+                  <input id="performanceEmployeeName" list="employeeOptions" placeholder="Search or enter employee name" />
+                </label>
+                <label>
+                  Review period
+                  <input id="performancePeriod" placeholder="Example: Q3 2026" />
+                </label>
+                <label>
+                  Outcome
+                  <select id="performanceOutcome">
+                    <option value="not_assessed">Not assessed</option>
+                    <option value="exceeding">Exceeding expectations</option>
+                    <option value="meeting">Meeting expectations</option>
+                    <option value="partially_meeting">Partially meeting expectations</option>
+                    <option value="not_meeting">Not meeting expectations</option>
+                  </select>
+                </label>
+                <label>
+                  Follow-up status
+                  <select id="performanceStatus">
+                    <option value="on_track">On track</option>
+                    <option value="support_needed">Support needed</option>
+                    <option value="formal_review">Needs HR review</option>
+                    <option value="recognition_review">Promotion or raise review</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                Goals and expectations
+                <textarea id="performanceGoals" rows="3" placeholder="Agreed goals and measurable expectations"></textarea>
+              </label>
+              <label>
+                Documented evidence
+                <textarea id="performanceEvidence" rows="4" placeholder="Specific outcomes, dates, feedback, and relevant context"></textarea>
+              </label>
+              <div class="field-grid">
+                <label>
+                  Wins and positive impact
+                  <textarea id="performanceWins" rows="4" placeholder="Achievements, victories, praise, and measurable impact"></textarea>
+                </label>
+                <label>
+                  Concerns and missed expectations
+                  <textarea id="performanceConcerns" rows="4" placeholder="Specific faults, missed goals, incidents, dates, and context"></textarea>
+                </label>
+              </div>
+              <div class="field-grid">
+                <label>
+                  Support provided
+                  <textarea id="performanceSupport" rows="3" placeholder="Coaching, training, resources, or accommodations"></textarea>
+                </label>
+                <label>
+                  Next review date
+                  <input id="performanceNextReview" type="date" />
+                </label>
+              </div>
+              <button id="savePerformanceButton" class="primary-button">Save performance review</button>
+            </div>
+            <div id="performanceSummary" class="metrics-summary"></div>
+            <p class="meta-line">Flags open a documented human review. They do not automatically fire, demote, promote, or change pay.</p>
+            <div id="performanceList" class="list-panel compact-list"></div>
+          </article>
+
+          <article id="peopleEventsPanel" class="operation-panel focused-panel" hidden>
+            <div class="panel-title">
+              <h3>Employee record timeline</h3>
+              <p>Log factual shout-outs, complaints, and observations for contextual review.</p>
+            </div>
+            <div id="peopleEventForm" class="performance-form">
+              <div class="field-grid">
+                <label>
+                  Employee
+                  <input id="peopleEventEmployee" list="employeeOptions" placeholder="Search or enter employee name" />
+                </label>
+                <label>
+                  Record type
+                  <select id="peopleEventType">
+                    <option value="shout_out">Shout-out</option>
+                    <option value="complaint">Complaint or concern</option>
+                    <option value="observation">Factual observation</option>
+                  </select>
+                </label>
+                <label>
+                  Event date
+                  <input id="peopleEventDate" type="date" />
+                </label>
+                <label>
+                  Source
+                  <input id="peopleEventSource" placeholder="Manager, ticket, meeting, or reporter" />
+                </label>
+              </div>
+              <label>
+                Factual details
+                <textarea id="peopleEventSummary" rows="4" placeholder="What happened, when, where, and what evidence is available"></textarea>
+              </label>
+              <button id="savePeopleEventButton" class="primary-button">Save timeline record</button>
+            </div>
+            <div id="peopleEventSummaryPanel" class="metrics-summary"></div>
+            <p class="meta-line">Counts are context, not a behavior score. Complaints remain allegations until reviewed.</p>
+            <div id="peopleEmployeeList" class="list-panel compact-list"></div>
+            <div id="peopleEventList" class="list-panel compact-list"></div>
+          </article>
+
+          <article id="dataImportPanel" class="operation-panel focused-panel" hidden>
+            <div class="panel-title">
+              <h3>Dataset manager</h3>
+              <p>Upload employee CSV or JSON data and apply it to workforce analytics.</p>
+            </div>
+            <div id="datasetStoredSummary" class="metrics-summary">
+              <span><strong>0</strong> stored employees</span>
+              <span><strong>0</strong> analyzed outcomes</span>
+            </div>
+            <label>
+              Employee dataset
+              <input id="recordImportFile" type="file" accept=".csv,.json,application/json,text/csv" />
+            </label>
+            <p id="datasetPreview" class="meta-line">Choose a CSV or JSON file to preview it.</p>
+            <div class="composer-actions">
+              <button id="importRecordsButton" class="primary-button">Import and apply dataset</button>
+              <button id="downloadTemplateButton" class="ghost-button">Download CSV template</button>
+            </div>
+            <p id="importResult" class="meta-line">Existing data is already available. New imports are added and exact duplicates are skipped.</p>
+            <p class="meta-line">Protected demographic columns are excluded from analytics during import.</p>
+            <div class="records-browser">
+              <div class="panel-title">
+                <h4>Stored employee sample</h4>
+                <p>Search the employee records currently available to analytics.</p>
+              </div>
+              <label>
+                Search employees
+                <input id="datasetSearch" type="search" placeholder="Employee name, role, department, or location" />
+              </label>
+              <div id="datasetEmployeeSample" class="list-panel compact-list"></div>
+            </div>
+          </article>
+
+          <article id="recordsPanel" class="operation-panel">
+            <div class="panel-title">
+              <h3>Create HR record</h3>
+              <p>Maintain employee records and HR tasks.</p>
+            </div>
+            <div class="field-grid">
+              <label>
+                Type
+                <select id="recordType">
+                  <option value="employee">Employee</option>
+                  <option value="task">HR task</option>
+                </select>
+              </label>
+              <label>
+                Name
+                <input id="recordName" placeholder="Example: Backend Engineer candidate" />
+              </label>
+            </div>
+            <label>
+              Details
+              <textarea id="recordDetails" rows="4" placeholder="Notes, role, stage, policy area, owner, status..."></textarea>
+            </label>
+            <button id="saveRecordButton" class="primary-button">Save record</button>
+            <button id="cancelEditButton" class="ghost-button" hidden>Cancel edit</button>
+
+            <div class="records-browser">
+              <div class="panel-title">
+                <h4>Records</h4>
+              </div>
+              <div class="field-grid">
+                <label>
+                  Search
+                  <input id="recordSearch" type="search" placeholder="Name or details" />
+                </label>
+                <label>
+                  Filter
+                  <select id="recordFilter">
+                    <option value="">All types</option>
+                    <option value="employee">Employees</option>
+                    <option value="task">Tasks</option>
+                  </select>
+                </label>
+              </div>
+              <label class="checkbox-field">
+                <input id="includeDeletedRecords" type="checkbox" />
+                Show deleted records
+              </label>
+              <div id="recordsList" class="list-panel compact-list"></div>
+            </div>
+          </article>
+
+          <article id="decisionPanel" class="operation-panel focused-panel">
+            <div class="panel-title">
+              <h3>Review next action</h3>
+              <p>Prepare a documented recommendation and require approval for high-impact action.</p>
+            </div>
+            <div class="field-grid">
+              <label>
+                Decision type
+                <select id="decisionType">
+                  <option value="draft_document">Draft document</option>
+                  <option value="answer_employee_question">Employee question</option>
+                  <option value="performance_action">Performance action</option>
+                  <option value="compensation_change">Compensation change</option>
+                  <option value="termination">Termination</option>
+                </select>
+              </label>
+              <label>
+                Subject
+                <input id="decisionSubject" placeholder="Person, role, case, policy, or workflow" />
+              </label>
+            </div>
+            <label>
+              Facts
+              <textarea id="decisionFacts" rows="4" placeholder="Only include facts, evidence, dates, metrics, and policy context."></textarea>
+            </label>
+            <label>
+              Proposed action
+              <textarea id="decisionAction" rows="3" placeholder="What should AI HR evaluate or prepare?"></textarea>
+            </label>
+            <button id="createDecisionButton" class="primary-button">Prepare review</button>
+          </article>
+        </section>
+
+        <section id="outputPanel" class="output-panel" aria-live="polite">
+          <div class="output-header">
+            <h3>AI HR output</h3>
+            <button id="copyButton" class="ghost-button">Copy</button>
+          </div>
+          <pre id="output">Choose a workspace to begin.</pre>
+          <div id="outputEvidence" class="evidence-panel" hidden></div>
+        </section>
+
+        <section id="reviewGrid" class="review-grid">
+          <article id="decisionQueuePanel" class="review-panel" hidden>
+            <div class="output-header">
+              <h3>Human review queue</h3>
+              <button id="refreshButton" class="ghost-button">Refresh</button>
+            </div>
+            <div id="decisionQueue" class="list-panel"></div>
+          </article>
+
+          <article id="auditLogPanel" class="review-panel" hidden>
+            <div class="output-header">
+              <h3>Audit log</h3>
+            </div>
+            <div id="auditLog" class="list-panel"></div>
+          </article>
+        </section>
+
+        <section id="adminTools" class="operations" hidden>
+          <article class="operation-panel">
+            <div class="panel-title">
+              <h3>Access management</h3>
+            </div>
+            <div class="field-grid">
+              <label>
+                Invitation email
+                <input id="invitationEmail" type="email" autocomplete="off" />
+              </label>
+              <label>
+                Invitation role
+                <select id="invitationRole">
+                  <option value="employee">Employee</option>
+                  <option value="hr_manager">HR manager</option>
+                  <option value="auditor">Auditor</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </label>
+            </div>
+            <button id="createInvitationButton" class="primary-button">Create invitation</button>
+            <label>
+              Invitation link
+              <input id="invitationLink" readonly />
+            </label>
+            <div id="invitationsList" class="list-panel compact-list"></div>
+
+            <div class="panel-title section-divider">
+              <h3>Direct account</h3>
+            </div>
+            <div class="field-grid">
+              <label>
+                User email
+                <input id="newUserEmail" type="email" autocomplete="off" />
+              </label>
+              <label>
+                Role
+                <select id="newUserRole">
+                  <option value="employee">Employee</option>
+                  <option value="hr_manager">HR manager</option>
+                  <option value="auditor">Auditor</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Temporary password
+              <input id="newUserPassword" type="password" autocomplete="new-password" aria-describedby="newUserPasswordGuidance" />
+            </label>
+            <div id="newUserPasswordGuidance" class="password-guidance" aria-live="polite"></div>
+            <button id="createUserButton" class="primary-button">Create user</button>
+            <p id="newUserStatus" class="form-status" aria-live="polite" hidden></p>
+            <div id="usersList" class="list-panel compact-list"></div>
+          </article>
+
+          <article class="operation-panel">
+            <div class="panel-title">
+              <h3>Privacy operations</h3>
+            </div>
+            <button id="exportDataButton" class="primary-button">Export organization data</button>
+            <label>
+              Deleted-record retention days
+              <input id="retentionDays" type="number" min="0" max="3650" value="30" />
+            </label>
+            <button id="purgeDataButton" class="ghost-button">Purge expired deleted records</button>
+            <div id="opsMetrics" class="metrics-summary"></div>
+          </article>
+
+          <article class="operation-panel">
+            <div class="panel-title">
+              <h3>Launch readiness</h3>
+              <p>Accountable owners must confirm external legal and operational controls.</p>
+            </div>
+            <div id="readinessChecklist" class="checklist-panel"></div>
+            <div id="integrationStatus" class="list-panel compact-list"></div>
+          </article>
+
+          <article class="operation-panel">
+            <div class="panel-title">
+              <h3>Scheduled workflows</h3>
+              <p>Queue reminders and provider webhook events.</p>
+            </div>
+            <div class="field-grid">
+              <label>
+                Workflow name
+                <input id="workflowName" placeholder="Example: Send onboarding reminder" />
+              </label>
+              <label>
+                Integration
+                <select id="workflowIntegration">
+                  <option value="collaboration">Collaboration</option>
+                  <option value="calendar">Calendar</option>
+                  <option value="hris">HRIS</option>
+                  <option value="ats">ATS</option>
+                  <option value="payroll">Payroll notification</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Run at
+              <input id="workflowRunAt" type="datetime-local" />
+            </label>
+            <label>
+              Message
+              <textarea id="workflowMessage" rows="3"></textarea>
+            </label>
+            <button id="scheduleWorkflowButton" class="primary-button">Schedule workflow</button>
+            <div id="scheduledWorkflows" class="list-panel compact-list"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <datalist id="employeeOptions"></datalist>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

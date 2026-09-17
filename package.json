@@ -1,0 +1,37 @@
+{
+  "name": "ai-hr",
+  "version": "0.11.0",
+  "private": true,
+  "description": "Gemini-powered AI HR operating system for HR workflows, records, decision briefs, approvals, and audit trails.",
+  "type": "module",
+  "scripts": {
+    "demo:dedupe": "node scripts/dedupe-demo-employees.mjs",
+    "demo:history": "node scripts/seed-demo-employee-history.mjs",
+    "check": "node --check server.js && node --check public/app.js",
+    "smoke": "node scripts/smoke-test.mjs",
+    "verify": "node scripts/verify-local.mjs",
+    "verify:auth": "node scripts/verify-auth.mjs",
+    "verify:postgres": "node scripts/verify-postgres.mjs",
+    "verify:backup": "node scripts/verify-backup-crypto.mjs",
+    "verify:alerts": "node scripts/verify-alerter.mjs",
+    "verify:analytics": "node scripts/verify-analytics.mjs",
+    "backup": "node scripts/backup-store.mjs",
+    "restore": "node scripts/restore-store.mjs",
+    "test": "npm run check && npm run verify && npm run verify:auth && npm run verify:analytics && npm run verify:backup && npm run verify:alerts && npm run verify:postgres",
+    "test:e2e": "node scripts/full-e2e-test.mjs",
+    "test:e2e:isolated": "node scripts/run-full-e2e-isolated.mjs",
+    "release:check": "npm audit --omit=dev && npm test && npm run test:e2e:isolated",
+    "start:detached": "node scripts/start-detached.mjs",
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "nodemailer": "^9.1.1",
+    "pdfkit": "^0.20.2",
+    "pg": "^8.16.3"
+  }
+}

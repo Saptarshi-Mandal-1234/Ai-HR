@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: ai-hr
+    runtime: docker
+    plan: starter
+    region: singapore
+    healthCheckPath: /api/ready
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ai-hr-db
+          property: connectionString
+      - key: DATABASE_SSL
+        value: require
+      - key: AIHR_ORGANIZATION_ID
+        value: production
+      - key: AIHR_AUTH_REQUIRED
+        value: "true"
+      - key: AIHR_SESSION_DAYS
+        value: "7"
+      - key: AIHR_INVITATION_HOURS
+        value: "72"
+      - key: AIHR_LOG_REQUESTS
+        value: "true"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: AIHR_BACKUP_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
+      - key: AIHR_ADMIN_TOKEN
+        generateValue: true
+      - key: AIHR_HR_MANAGER_TOKEN
+        generateValue: true
+      - key: AIHR_RECRUITER_TOKEN
+        generateValue: true
+      - key: AIHR_EMPLOYEE_TOKEN
+        generateValue: true
+      - key: AIHR_AUDITOR_TOKEN
+        generateValue: true
+
+databases:
+  - name: ai-hr-db
+    plan: basic-256mb
+    region: singapore
+    postgresMajorVersion: "17"
+    databaseName: aihr
+    user: aihr
+    ipAllowList: []

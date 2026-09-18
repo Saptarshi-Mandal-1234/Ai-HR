@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI HR Workspace</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">HR</span>
+          <div>
+            <h1>AI HR</h1>
+            <p>People operations command center</p>
+          </div>
+        </div>
+
+        <nav class="mode-list" aria-label="HR specialties">
+          <button class="mode-button active" data-mode="generalist">HR Generalist</button>
+          <button class="mode-button" data-mode="recruiter">Recruiter</button>
+          <button class="mode-button" data-mode="onboarding">Onboarding</button>
+          <button class="mode-button" data-mode="relations">Employee Relations</button>
+          <button class="mode-button" data-mode="performance">Performance</button>
+          <button class="mode-button" data-mode="policy">Policy</button>
+          <button class="mode-button" data-mode="analytics">People Analytics</button>
+          <button class="mode-button" data-mode="learning">Learning</button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Gemini-powered workspace</p>
+            <h2>Run HR operations from intake to decision brief.</h2>
+          </div>
+          <div class="topbar-tools">
+            <label class="token-field">
+              Access token
+              <input id="authToken" type="password" placeholder="Optional in local mode" autocomplete="off" />
+            </label>
+            <div class="status-pill" id="statusPill">Checking API</div>
+          </div>
+        </header>
+
+        <section class="ops-grid" aria-label="HR operating metrics">
+          <article>
+            <span id="recordsMetric">0</span>
+            <p>People records</p>
+          </article>
+          <article>
+            <span id="decisionsMetric">0</span>
+            <p>Decision briefs</p>
+          </article>
+          <article>
+            <span id="approvalsMetric">0</span>
+            <p>Pending approvals</p>
+          </article>
+          <article>
+            <span id="criticalMetric">0</span>
+            <p>Critical risk cases</p>
+          </article>
+        </section>
+
+        <section class="quick-actions" aria-label="Quick HR workflows">
+          <button data-template="Write a job description for a senior backend engineer, including scorecard, interview stages, and inclusive language checks.">Job description</button>
+          <button data-template="Create a 30-60-90 day onboarding plan for a new sales manager.">Onboarding plan</button>
+          <button data-template="Draft a fair performance improvement plan for an employee missing deadlines. Include documentation checkpoints.">PIP draft</button>
+          <button data-template="Create an investigation plan for a complaint about manager favoritism. Include risk flags and interview questions.">Investigation plan</button>
+          <button data-template="Build a retention risk dashboard with metrics, signals, and recommended actions.">Retention dashboard</button>
+          <button data-template="Draft a policy for hybrid work, including eligibility, manager responsibilities, exceptions, and review cadence.">Policy draft</button>
+        </section>
+
+        <section class="composer">
+          <div class="field-grid">
+            <label>
+              Output
+              <select id="desiredOutput">
+                <option value="action_plan">Action plan</option>
+                <option value="email_or_message">Email or message</option>
+                <option value="policy_or_sop">Policy or SOP</option>
+                <option value="interview_kit">Interview kit</option>
+                <option value="decision_memo">Decision memo</option>
+                <option value="checklist">Checklist</option>
+              </select>
+            </label>
+            <label>
+              Risk level
+              <select id="riskLevel">
+                <option value="normal">Normal</option>
+                <option value="sensitive">Sensitive</option>
+                <option value="high">High-stakes</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Company context
+            <textarea id="companyContext" rows="4" placeholder="Company size, location, policies, roles, culture, constraints..."></textarea>
+          </label>
+
+          <label>
+            HR request
+            <textarea id="prompt" rows="7" placeholder="Example: Help me prepare a fair promotion process for team leads across engineering and support."></textarea>
+          </label>
+
+          <div class="composer-actions">
+            <button id="runButton" class="primary-button">Generate HR work</button>
+            <button id="clearButton" class="ghost-button">Clear</button>
+          </div>
+        </section>
+
+        <section class="operations">
+          <article class="operation-panel">
+            <div class="panel-title">
+              <h3>Create HR record</h3>
+              <p>Track employees, candidates, jobs, policies, cases, and tasks.</p>
+            </div>
+            <div class="field-grid">
+              <label>
+                Type
+                <select id="recordType">
+                  <option value="employee">Employee</option>
+                  <option value="candidate">Candidate</option>
+                  <option value="job">Job</option>
+                  <option value="policy">Policy</option>
+                  <option value="case">Employee relations case</option>
+                  <option value="task">HR task</option>
+                </select>
+              </label>
+              <label>
+                Name
+                <input id="recordName" placeholder="Example: Backend Engineer candidate" />
+              </label>
+            </div>
+            <label>
+              Details
+              <textarea id="recordDetails" rows="4" placeholder="Notes, role, stage, policy area, owner, status..."></textarea>
+            </label>
+            <button id="saveRecordButton" class="primary-button">Save record</button>
+          </article>
+
+          <article class="operation-panel">
+            <div class="panel-title">
+              <h3>Decision engine</h3>
+              <p>Creates decision briefs and blocks high-impact action until review.</p>
+            </div>
+            <div class="field-grid">
+              <label>
+                Decision type
+                <select id="decisionType">
+                  <option value="draft_document">Draft document</option>
+                  <option value="answer_employee_question">Employee question</option>
+                  <option value="generate_training_plan">Training plan</option>
+                  <option value="candidate_shortlist">Candidate shortlist</option>
+                  <option value="performance_action">Performance action</option>
+                  <option value="compensation_change">Compensation change</option>
+                  <option value="termination">Termination</option>
+                  <option value="employee_relations_case">ER case</option>
+                </select>
+              </label>
+              <label>
+                Subject
+                <input id="decisionSubject" placeholder="Person, role, case, policy, or workflow" />
+              </label>
+            </div>
+            <label>
+              Facts
+              <textarea id="decisionFacts" rows="4" placeholder="Only include facts, evidence, dates, metrics, and relevant policy context."></textarea>
+            </label>
+            <label>
+              Proposed action
+              <textarea id="decisionAction" rows="3" placeholder="What should AI HR evaluate or prepare?"></textarea>
+            </label>
+            <button id="createDecisionButton" class="primary-button">Create decision brief</button>
+          </article>
+        </section>
+
+        <section class="output-panel" aria-live="polite">
+          <div class="output-header">
+            <h3>AI HR output</h3>
+            <button id="copyButton" class="ghost-button">Copy</button>
+          </div>
+          <pre id="output">Choose a specialty, describe the HR task, and generate a working draft.</pre>
+        </section>
+
+        <section class="review-grid">
+          <article class="review-panel">
+            <div class="output-header">
+              <h3>Decision queue</h3>
+              <button id="refreshButton" class="ghost-button">Refresh</button>
+            </div>
+            <div id="decisionQueue" class="list-panel"></div>
+          </article>
+
+          <article class="review-panel">
+            <div class="output-header">
+              <h3>Audit log</h3>
+            </div>
+            <div id="auditLog" class="list-panel"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
